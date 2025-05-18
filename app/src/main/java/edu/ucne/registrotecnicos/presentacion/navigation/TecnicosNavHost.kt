@@ -54,12 +54,13 @@ fun TecnicosNavHost(
             )
         }
 
-        // Lista de tickets
         composable("TicketList") {
             val ticketList = ticketViewModel.ticketList.collectAsState().value
+            val tecnicoList = tecnicoViewModel.tecnicoList.collectAsState().value
 
             TicketListScreen(
                 ticketList = ticketList,
+                tecnicos = tecnicoList,
                 onEdit = { ticket ->
                     navHostController.navigate("Ticket/${ticket.ticketId}")
                 },
@@ -71,6 +72,7 @@ fun TecnicosNavHost(
                 }
             )
         }
+
 
         // Crear o editar técnico
         composable("Tecnico/{tecnicoId}") { backStackEntry ->

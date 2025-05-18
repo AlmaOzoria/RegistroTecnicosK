@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
             TicketEntity::class,
             PrioridadEntity::class
         ],
-        version = 7,
+        version = 11,
         exportSchema = false
     )
     abstract class TecnicoDb : RoomDatabase() {

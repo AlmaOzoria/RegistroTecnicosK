@@ -35,11 +35,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
 import edu.ucne.registrotecnicos.data.local.entities.TicketEntity
 
 @Composable
 fun TicketListScreen(
     ticketList: List<TicketEntity>,
+    tecnicos: List<TecnicoEntity>,
     onCreate: () -> Unit,
     onDelete: (TicketEntity) -> Unit,
     onEdit: (TicketEntity) -> Unit
@@ -82,7 +84,7 @@ fun TicketListScreen(
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(18.dp)) {
                 items(ticketList) { ticket ->
-                    TicketRow(ticket, onDelete, onEdit)
+                    TicketRow(ticket, tecnicos, onDelete, onEdit)
                 }
             }
         }
@@ -92,6 +94,7 @@ fun TicketListScreen(
 @Composable
 fun TicketRow(
     ticket: TicketEntity,
+    tecnicos: List<TecnicoEntity>,
     onDelete: (TicketEntity) -> Unit,
     onEdit: (TicketEntity) -> Unit
 ) {
@@ -101,6 +104,8 @@ fun TicketRow(
             3 -> "Alta"
             else -> "Desconocida"
         }
+
+    val tecnicoNombre = tecnicos.find { tecnico -> tecnico.tecnicoId == ticket.tecnicoId }?.nombre ?: "Desconocido"
 
     Card(
         elevation = CardDefaults.cardElevation(14.dp),
@@ -148,8 +153,8 @@ fun TicketRow(
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Tecnico: ", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text(text = prioridadTexto, fontSize = 16.sp)
+                    Text(text = "Técnico: ", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(text = tecnicoNombre, fontSize = 16.sp)
                 }
 
             }
@@ -183,45 +188,41 @@ fun TicketRow(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun TicketListScreenPreview() {
-    val sampleTickets = remember {
-        mutableStateListOf(
-            TicketEntity(
-                fecha = "2025-05-17",
-                prioridadId = 3, // Alta
-                cliente = "Juan Pérez",
-                asunto = "Problema de red",
-                descripcion = "No hay acceso a internet",
-                tecnicoId = 3
-            ),
-            TicketEntity(
-                fecha = "2025-05-16",
-                prioridadId = 2, // Media
-                cliente = "María García",
-                asunto = "Error de software",
-                descripcion = "El sistema no responde",
-                // tecnicoId = 6
-            )
-        )
-    }
-
-    TicketListScreen(
-        ticketList = sampleTickets,
-        onCreate = {
-            sampleTickets.add(
-                TicketEntity(
-                    fecha = "2025-05-18",
-                    prioridadId = 1, // Baja
-                    cliente = "Carlos López",
-                    asunto = "Consulta",
-                    descripcion = "Consulta sobre soporte técnico",
-                    // tecnicoId = 1
-                )
-            )
-        },
-        onDelete = { ticket -> sampleTickets.remove(ticket) },
-        onEdit = { /* Simulación de edición */ }
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun TicketListScreenPreview() {
+//    val sampleTickets = remember {
+//        mutableStateListOf(
+//            TicketEntity(
+//                fecha = "2025-05-17",
+//                prioridadId = 3,
+//                cliente = "Juan Pérez",
+//                asunto = "Problema de red",
+//                descripcion = "No hay acceso a internet",
+//                tecnicoId = 3
+//            ),
+//            TicketEntity(
+//                fecha = "2025-05-16",
+//                prioridadId = 2,
+//                cliente = "María García",
+//                asunto = "Error de software",
+//                descripcion = "El sistema no responde",
+//                tecnicoId = 6
+//            )
+//        )
+//    }
+//
+//    val sampleTecnicos = listOf(
+//        TecnicoEntity(tecnicoId = 1, nombre = "Carlos"),
+//        TecnicoEntity(tecnicoId = 3, nombre = "Ana"),
+//        TecnicoEntity(tecnicoId = 6, nombre = "Luis")
+//    )
+//
+//    TicketListScreen(
+//        ticketList = sampleTickets,
+//        tecnicos = sampleTecnicos,
+//        onCreate = { /* ... */ },
+//        onDelete = { ticket -> sampleTickets.remove(ticket) },
+//        onEdit = { /* ... */ }
+//    )
+//}
