@@ -2,14 +2,17 @@ package edu.ucne.registrotecnicos.presentacion.tecnicos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
 import edu.ucne.registrotecnicos.data.local.repository.TecnicoRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TecnicoViewModel(
+@HiltViewModel
+class TecnicoViewModel @Inject constructor(
     private val repository: TecnicoRepository
 ) : ViewModel() {
 
