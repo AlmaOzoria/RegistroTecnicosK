@@ -5,9 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import edu.ucne.registrotecnicos.data.local.dao.MensajeDao
 import edu.ucne.registrotecnicos.data.local.dao.PrioridadDao
 import edu.ucne.registrotecnicos.data.local.dao.TecnicoDao
 import edu.ucne.registrotecnicos.data.local.dao.TicketDao
+import edu.ucne.registrotecnicos.data.local.entities.MensajeEntity
 import edu.ucne.registrotecnicos.data.local.entities.PrioridadEntity
 import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
 import edu.ucne.registrotecnicos.data.local.entities.TicketEntity
@@ -19,15 +21,17 @@ import kotlinx.coroutines.launch
         entities = [
             TecnicoEntity::class,
             TicketEntity::class,
-            PrioridadEntity::class
+            PrioridadEntity::class,
+            MensajeEntity::class
         ],
-        version = 7,
+        version = 15,
         exportSchema = false
     )
     abstract class TecnicoDb : RoomDatabase() {
         abstract fun tecnicoDao(): TecnicoDao
         abstract fun ticketDao(): TicketDao
     abstract fun prioridadDao(): PrioridadDao
+    abstract fun mensajeDao(): MensajeDao
 
     companion object {
         @Volatile

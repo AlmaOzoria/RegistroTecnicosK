@@ -1,6 +1,6 @@
 package edu.ucne.registrotecnicos.presentacion.ticket
 
-import android.R.attr.label
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,7 +43,6 @@ import edu.ucne.registrotecnicos.data.local.entities.PrioridadEntity
 import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
 import edu.ucne.registrotecnicos.data.local.entities.TicketEntity
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TicketScreen(
@@ -50,7 +50,8 @@ fun TicketScreen(
     prioridades: List<PrioridadEntity>,
     tecnicos: List<TecnicoEntity>,
     agregarTicket: (String, Int, String, String, String, Int) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    onSendMessage: (TicketEntity) -> Unit
 ) {
     var fecha by remember { mutableStateOf(ticket?.fecha ?: "") }
     var prioridadId by remember { mutableStateOf(ticket?.prioridadId ?: 0) }
@@ -60,7 +61,7 @@ fun TicketScreen(
     var tecnicoId by remember { mutableStateOf(ticket?.tecnicoId ?: 0) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    var expanded by remember { mutableStateOf(false) }
+    var expandedPrioridad by remember { mutableStateOf(false) }
     var selectedPrioridad by remember {
         mutableStateOf(
             prioridades.find { it.prioridadId == ticket?.prioridadId }
@@ -74,39 +75,6 @@ fun TicketScreen(
             tecnicos.find { it.tecnicoId == ticket?.tecnicoId }
                 ?: tecnicos.firstOrNull() ?: TecnicoEntity(0, "Seleccionar")
         )
-    }
-    ExposedDropdownMenuBox(
-        expanded = expandedTecnico,
-        onExpandedChange = { expandedTecnico = !expandedTecnico }
-    ) {
-        OutlinedTextField(
-            readOnly = true,
-            value = selectedTecnico.nombre,
-            onValueChange = {},
-            label = { Text("Técnico") },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTecnico)
-            },
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-        )
-
-        ExposedDropdownMenu(
-            expanded = expandedTecnico,
-            onDismissRequest = { expandedTecnico = false }
-        ) {
-            tecnicos.forEach { tecnico ->
-                DropdownMenuItem(
-                    text = { Text(tecnico.nombre) },
-                    onClick = {
-                        selectedTecnico = tecnico
-                        tecnicoId = tecnico.tecnicoId!!
-                        expandedTecnico = false
-                    }
-                )
-            }
-        }
     }
 
     Scaffold(
@@ -154,157 +122,149 @@ fun TicketScreen(
                     label = { Text("Fecha") },
                     modifier = Modifier.fillMaxWidth()
                 )
-                var expanded by remember { mutableStateOf(false) }
-                var selectedPrioridad by remember {
-                    mutableStateOf(
-                        prioridades.find { it.prioridadId == ticket?.prioridadId }
-                            ?: prioridades.firstOrNull() ?: PrioridadEntity(0, "Seleccionar")
+
+                // Selector de Prioridad
+                ExposedDropdownMenuBox(
+                    expanded = expandedPrioridad,
+                    onExpandedChange = { expandedPrioridad = !expandedPrioridad }
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = selectedPrioridad.descripcion,
+                        onValueChange = {},
+                        label = { Text("Prioridad") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPrioridad)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expandedPrioridad,
+                        onDismissRequest = { expandedPrioridad = false }
+                    ) {
+                        prioridades.forEach { prioridad ->
+                            DropdownMenuItem(
+                                text = { Text(prioridad.descripcion) },
+                                onClick = {
+                                    selectedPrioridad = prioridad
+                                    prioridadId = prioridad.prioridadId
+                                    expandedPrioridad = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                OutlinedTextField(
+                    value = cliente,
+                    onValueChange = { cliente = it },
+                    label = { Text("Nombre del cliente") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = asunto,
+                    onValueChange = { asunto = it },
+                    label = { Text("Asunto") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = descripcion,
+                    onValueChange = { descripcion = it },
+                    label = { Text("Descripción") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                // Selector de Técnico
+                ExposedDropdownMenuBox(
+                    expanded = expandedTecnico,
+                    onExpandedChange = { expandedTecnico = !expandedTecnico }
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = selectedTecnico.nombre,
+                        onValueChange = {},
+                        label = { Text("Técnico") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTecnico)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expandedTecnico,
+                        onDismissRequest = { expandedTecnico = false }
+                    ) {
+                        tecnicos.forEach { tecnico ->
+                            DropdownMenuItem(
+                                text = { Text(tecnico.nombre) },
+                                onClick = {
+                                    selectedTecnico = tecnico
+                                    tecnicoId = tecnico.tecnicoId!!
+                                    expandedTecnico = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                error?.let {
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
 
-                if (prioridades.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = !expanded }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = { onCancel() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 8.dp)
                     ) {
-                        OutlinedTextField(
-                            readOnly = true,
-                            value = selectedPrioridad.descripcion,
-                            onValueChange = {},
-                            label = { Text("Prioridad") },
-                            trailingIcon = {
-                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                            },
-                            modifier = Modifier
-                                .menuAnchor()
-                                .fillMaxWidth()
-                        )
-
-                        ExposedDropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            prioridades.forEach { prioridad ->
-                                DropdownMenuItem(
-                                    text = { Text(prioridad.descripcion) },
-                                    onClick = {
-                                        selectedPrioridad = prioridad
-                                        prioridadId = prioridad.prioridadId
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
+                        Text("Cancelar")
                     }
-
-                    OutlinedTextField(
-                        value = cliente,
-                        onValueChange = { cliente = it },
-                        label = { Text("Nombre del cliente") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    OutlinedTextField(
-                        value = asunto,
-                        onValueChange = { asunto = it },
-                        label = { Text("Asunto") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    OutlinedTextField(
-                        value = descripcion,
-                        onValueChange = { descripcion = it },
-                        label = { Text("Descripcion") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    ExposedDropdownMenuBox(
-                        expanded = expandedTecnico,
-                        onExpandedChange = { expandedTecnico = !expandedTecnico }
-                    ) {
-                        OutlinedTextField(
-                            readOnly = true,
-                            value = selectedTecnico.nombre,
-                            onValueChange = {},
-                            label = { Text("Técnico") },
-                            trailingIcon = {
-                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTecnico)
-                            },
-                            modifier = Modifier
-                                .menuAnchor()
-                                .fillMaxWidth()
-                        )
-
-                        ExposedDropdownMenu(
-                            expanded = expandedTecnico,
-                            onDismissRequest = { expandedTecnico = false }
-                        ) {
-                            tecnicos.forEach { tecnico ->
-                                DropdownMenuItem(
-                                    text = { Text(tecnico.nombre) },
-                                    onClick = {
-                                        selectedTecnico = tecnico
-                                        tecnicoId = tecnico.tecnicoId!!
-                                        expandedTecnico = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-
-
-                    error?.let {
-                        Text(
-                            text = it,
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(top = 4.dp)
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = { onCancel() },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 8.dp)
-                        ) {
-                            Text("Cancelar")
-                        }
-                        Button(
-                            onClick = {
-                                when {
-                                    fecha.isBlank() -> error = "La fecha es requerida"
-                                    selectedPrioridad.descripcion.isBlank() -> error =
-                                        "La prioridad es requerida"
-
-                                    prioridadId <= 0 -> error =
-                                        "La prioridad debe ser un número positivo"
-
-                                    cliente.isBlank() -> error = "El cliente es requerido"
-                                    asunto.isBlank() -> error = "El asunto es requerido"
-                                    descripcion.isBlank() -> error = "La descripción es requerida"
-                                    tecnicoId <= 0 -> error = "El técnico es requerido"
-                                    else -> try {
-                                        agregarTicket(
-                                            fecha,
-                                            prioridadId,
-                                            cliente,
-                                            asunto,
-                                            descripcion,
-                                            tecnicoId
-                                        )
-                                    } catch (e: Exception) {
-                                        error = "Error al agregar el ticket: ${e.message}"
-                                    }
+                    Button(
+                        onClick = {
+                            when {
+                                fecha.isBlank() -> error = "La fecha es requerida"
+                                selectedPrioridad.descripcion.isBlank() -> error =
+                                    "La prioridad es requerida"
+                                prioridadId <= 0 -> error =
+                                    "La prioridad debe ser un número positivo"
+                                cliente.isBlank() -> error = "El cliente es requerido"
+                                asunto.isBlank() -> error = "El asunto es requerido"
+                                descripcion.isBlank() -> error = "La descripción es requerida"
+                                tecnicoId <= 0 -> error = "El técnico es requerido"
+                                else -> try {
+                                    agregarTicket(
+                                        fecha,
+                                        prioridadId,
+                                        cliente,
+                                        asunto,
+                                        descripcion,
+                                        tecnicoId
+                                    )
+                                } catch (e: Exception) {
+                                    error = "Error al agregar el ticket: ${e.message}"
                                 }
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 8.dp)
-                        ) {
-                            Text("Guardar")
-                        }
+                            }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 8.dp)
+                    ) {
+                        Text("Guardar")
                     }
                 }
             }
@@ -315,22 +275,27 @@ fun TicketScreen(
 @Preview(showBackground = true)
 @Composable
 fun TicketScreenPreview() {
-    TicketScreen(
-        ticket = null,
-        prioridades = listOf(
-            PrioridadEntity(1, "Baja"),
-            PrioridadEntity(2, "Media"),
-            PrioridadEntity(3, "Alta")
-        ),
-        tecnicos = listOf(
-            TecnicoEntity(1, "Carlos"),
-            TecnicoEntity(2, "María"),
-            TecnicoEntity(3, "Luis")
-        ),
-        agregarTicket = { fecha, prioridadId, cliente, asunto, descripcion, tecnicoId ->
-            println("Nuevo ticket: $fecha, $prioridadId, $cliente, $asunto, $descripcion, $tecnicoId")
-        },
-        onCancel = { println("Cancelado") }
-    )
+    val context = LocalContext.current
+    MaterialTheme {
+        TicketScreen(
+            ticket = null,
+            prioridades = listOf(
+                PrioridadEntity(1, "Baja"),
+                PrioridadEntity(2, "Media"),
+                PrioridadEntity(3, "Alta")
+            ),
+            tecnicos = listOf(
+                TecnicoEntity(1, "Carlos"),
+                TecnicoEntity(2, "María"),
+                TecnicoEntity(3, "Luis")
+            ),
+            agregarTicket = { fecha, prioridadId, cliente, asunto, descripcion, tecnicoId ->
+                println("Nuevo ticket: $fecha, $prioridadId, $cliente, $asunto, $descripcion, $tecnicoId")
+            },
+            onCancel = { println("Cancelado") },
+            onSendMessage = { ticket ->
+                Toast.makeText(context, "Enviando mensaje para el ticket: ${ticket.asunto}", Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
 }
-
