@@ -28,7 +28,7 @@ fun Home(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Registro Técnicos/Tickets",
+            text = "Bienvenidos",
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(vertical = 20.dp)
