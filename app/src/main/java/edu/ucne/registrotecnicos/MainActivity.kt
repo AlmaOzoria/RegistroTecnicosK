@@ -12,6 +12,7 @@ import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.data.local.repository.TecnicoRepository
 import edu.ucne.registrotecnicos.data.local.repository.TicketRepository
 import edu.ucne.registrotecnicos.data.repository.TecnicosNavHost
+import edu.ucne.registrotecnicos.presentacion.enfermedad.EnfermedadViewModel
 import edu.ucne.registrotecnicos.presentacion.tecnicos.TecnicoViewModel
 import edu.ucne.registrotecnicos.presentacion.ticket.TicketViewModel
 import edu.ucne.registrotecnicos.ui.theme.RegistroTecnicosTheme
@@ -26,11 +27,13 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val tecnicoViewModel: TecnicoViewModel = hiltViewModel()
                 val ticketViewModel: TicketViewModel = hiltViewModel()
+                val enfermedadViewModel: EnfermedadViewModel = hiltViewModel()
 
                 TecnicosNavHost(
                     navHostController = navController,
                     tecnicoViewModel = tecnicoViewModel,
-                    ticketViewModel = ticketViewModel
+                    ticketViewModel = ticketViewModel,
+                    enfermedadViewModel = enfermedadViewModel
                 )
             }
         }
