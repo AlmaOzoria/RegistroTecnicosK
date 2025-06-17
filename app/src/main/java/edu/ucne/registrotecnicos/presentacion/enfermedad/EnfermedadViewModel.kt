@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class EnfermedadViewModel @Inject constructor(
     private val repository: EnfermedadRepository
@@ -72,12 +73,4 @@ class EnfermedadViewModel @Inject constructor(
 
 
 
-data class EnfermedadUiState(
-    val enfermedadId: Int? = null,
-    val descripcion: String? = null,
-    val monto: Double = 0.0,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null,
-    val enfermedades: List<EnfermedadDto> = emptyList(),
-    val inputError: String? = null
-)
+

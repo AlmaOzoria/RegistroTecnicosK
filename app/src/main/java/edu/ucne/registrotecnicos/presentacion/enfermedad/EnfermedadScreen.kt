@@ -64,7 +64,7 @@ fun EnfermedadBodyScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Formulario Enfermedad",
+                        text = "Registar Enfermedad",
                         style = TextStyle(
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
