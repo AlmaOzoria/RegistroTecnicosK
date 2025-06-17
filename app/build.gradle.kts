@@ -3,10 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinx.serialization)
-    id("com.google.devtools.ksp") version "2.0.20-1.0.25"
-    id("com.google.dagger.hilt.android") version "2.51.1"
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
-
 android {
     namespace = "edu.ucne.registrotecnicos"
     compileSdk = 35
@@ -30,17 +29,19 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         compose = true
     }
-
 }
 
 dependencies {
@@ -63,25 +64,26 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    //navegacion
-    implementation("androidx.navigation:navigation-compose:2.8.0-rc01")
+    
+
+    //Navegacion
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlin.serialization.json)
-    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation(libs.material3)
 
-    //room
-    implementation("androidx.room:room-runtime:2.7.0")
-    ksp("androidx.room:room-compiler:2.7.0")
-    implementation("androidx.room:room-ktx:2.7.0")
+    //Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
     //Hilt
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
-    //retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation(libs.retrofit)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.converter.moshi)
+    implementation(libs.logging.interceptor)
     configurations.all {
         resolutionStrategy {
             force("com.squareup:javapoet:1.13.0")
