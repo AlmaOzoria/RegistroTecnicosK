@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-
+import androidx.compose.material.icons.filled.LocalHospital
 
 private val verde = Color(0xFF00BCD4)
 
@@ -61,7 +61,7 @@ fun Home(
 
         MenuCard(
             title = "Enfermedades",
-            icon = Icons.Filled.MailOutline,
+            icon = Icons.Filled.LocalHospital,
             onClick = goToEnfermedad,
             backgroundColor = verde,
             contentColor = MaterialTheme.colorScheme.onPrimary

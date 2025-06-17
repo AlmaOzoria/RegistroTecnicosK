@@ -1,7 +1,6 @@
 package edu.ucne.registrotecnicos.data.local.repository
 
 
-import androidx.compose.material3.DatePicker
 import edu.ucne.registrotecnicos.presentacion.remote.dto.EnfermedadDto
 import edu.ucne.registrotecnicos.presentacion.remote.Resource
 import edu.ucne.registrotecnicos.presentacion.remote.DataSource
@@ -21,8 +20,6 @@ class EnfermedadRepository @Inject constructor(
             emit(Resource.Error("Error: ${e.message}"))
         }
     }
-
-//    suspend fun getEnfermedad(id: Int) = DataSource.getEnfermedad(id)
 
     suspend fun createEnfermedad(enfermedadDto: EnfermedadDto) =
         dataSource.createEnfermedad(enfermedadDto)
