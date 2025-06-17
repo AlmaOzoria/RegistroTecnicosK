@@ -12,5 +12,5 @@ data class MensajeEntity(
     val descripcion: String = "",
     val fecha: String?,
     val rol: String = "",
-    val fechaHora: Long
+    val fechaHora: Long,
 )

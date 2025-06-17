@@ -16,7 +16,7 @@ class TecnicoViewModel @Inject constructor(
     private val repository: TecnicoRepository
 ) : ViewModel() {
 
-    // Exponemos el listado de técnicos como StateFlow
+
     val tecnicoList: StateFlow<List<TecnicoEntity>> = repository.getAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -28,14 +28,12 @@ class TecnicoViewModel @Inject constructor(
         saveTecnico(tecnico)
     }
 
-    // Guardar o actualizar un técnico
     fun saveTecnico(tecnico: TecnicoEntity) {
         viewModelScope.launch {
             repository.save(tecnico)
         }
     }
 
-    // Eliminar un técnico
     fun delete(tecnico: TecnicoEntity) {
         viewModelScope.launch {
             repository.delete(tecnico)
@@ -46,7 +44,6 @@ class TecnicoViewModel @Inject constructor(
         saveTecnico(tecnico)
     }
 
-    // Buscar técnico por ID en la lista actual
     fun getTecnicoById(id: Int?): TecnicoEntity? {
         return tecnicoList.value.find { it.tecnicoId == id }
     }

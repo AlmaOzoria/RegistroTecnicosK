@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -108,101 +109,91 @@ fun TicketRow(
         else -> "Desconocida"
     }
 
-    val tecnicoNombre = tecnicos.find { tecnico -> tecnico.tecnicoId == ticket.tecnicoId }?.nombre ?: "Desconocido"
+    val tecnicoNombre = tecnicos.find { it.tecnicoId == ticket.tecnicoId }?.nombre ?: "Desconocido"
 
     Card(
         elevation = CardDefaults.cardElevation(14.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White)
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .padding(22.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(16.dp)
+                .fillMaxWidth()
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Fecha: ", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text(text = ticket.fecha, fontSize = 16.sp)
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Prioridad: ", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text(text = prioridadTexto, fontSize = 16.sp)
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Cliente: ", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text(text = ticket.cliente, fontSize = 16.sp)
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Asunto: ", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text(text = ticket.asunto, fontSize = 16.sp)
-                }
-                Row(verticalAlignment = Alignment.Top) {
-                    Text(
-                        text = "Descripcion: ",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    )
-                    Text(
-                        text = ticket.descripcion,
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .padding(top = 2.dp)
-                            .weight(1f),
-                        softWrap = true
-                    )
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Técnico: ", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text(text = tecnicoNombre, fontSize = 16.sp)
-                }
-
+                Text(
+                    text = "${ticket.fecha}",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF000000)
+                )
             }
 
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Ticket #: ${ticket.ticketId}",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.Black
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Cliente: ${ticket.cliente}",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Text(
+                    text = "Asunto: ${ticket.asunto}",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
+                )
+            }
+
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp) // Reduce el espacio entre íconos
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
-                IconButton(
-                    onClick = { onSendMessage(ticket) },
-                    modifier = Modifier.size(36.dp)
-                ) {
+                IconButton(onClick = { onSendMessage(ticket) }) {
                     Icon(
                         imageVector = Icons.Filled.MailOutline,
                         contentDescription = "Enviar Mensaje",
-                        tint = Color(0xFF2196F3),
-                        modifier = Modifier.size(24.dp)
+                        tint = Color(0xFF2196F3)
                     )
                 }
-                IconButton(
-                    onClick = { onEdit(ticket) },
-                    modifier = Modifier.size(36.dp)
-                ) {
+                IconButton(onClick = { onEdit(ticket) }) {
                     Icon(
                         imageVector = Icons.Filled.Edit,
                         contentDescription = "Editar",
-                        tint = Color(0xFF4CAF50),
-                        modifier = Modifier.size(24.dp)
+                        tint = Color(0xFF4CAF50)
                     )
                 }
-
-                IconButton(
-                    onClick = { onDelete(ticket) },
-                    modifier = Modifier.size(36.dp)
-                ) {
+                IconButton(onClick = { onDelete(ticket) }) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
                         contentDescription = "Eliminar",
-                        tint = Color.Red,
-                        modifier = Modifier.size(24.dp)
+                        tint = Color.Red
                     )
                 }
             }
         }
     }
 }
+
 
 //@Preview(showBackground = true)
 //@Composable
