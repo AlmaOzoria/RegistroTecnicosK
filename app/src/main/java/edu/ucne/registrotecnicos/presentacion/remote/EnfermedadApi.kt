@@ -11,7 +11,7 @@ interface EnfermedadApi {
     suspend fun getEnfermedad(@Path("id") id: Int): EnfermedadDto
 
     @POST("api/Enfermedades")
-    suspend fun createEnfermedad(@Body laboratorioDto: EnfermedadDto): EnfermedadDto
+    suspend fun createEnfermedad(@Body EnfermedadDto: EnfermedadDto): EnfermedadDto
 
     @PUT("api/Enfermedades/{id}")
     suspend fun updateEnfermedad(@Path("id") id: Int, @Body enfermedadDto: EnfermedadDto): EnfermedadDto
