@@ -12,12 +12,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
+
 private val verde = Color(0xFF00BCD4)
 
 @Composable
 fun Home(
     goToTecnico: () -> Unit,
     goToTicket: () -> Unit,
+    goToEnfermedad: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -34,6 +36,7 @@ fun Home(
             modifier = Modifier.padding(vertical = 20.dp)
         )
 
+        // Los dos primeros botones en una fila
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -53,8 +56,19 @@ fun Home(
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        MenuCard(
+            title = "Enfermedades",
+            icon = Icons.Filled.MailOutline,
+            onClick = goToEnfermedad,
+            backgroundColor = verde,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
     }
 }
+
 
 @Composable
 fun MenuCard(
