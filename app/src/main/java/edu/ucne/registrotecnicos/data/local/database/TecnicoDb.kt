@@ -9,10 +9,12 @@ import edu.ucne.registrotecnicos.data.local.dao.MensajeDao
 import edu.ucne.registrotecnicos.data.local.dao.PrioridadDao
 import edu.ucne.registrotecnicos.data.local.dao.TecnicoDao
 import edu.ucne.registrotecnicos.data.local.dao.TicketDao
+import edu.ucne.registrotecnicos.data.local.dao.UsuarioDao
 import edu.ucne.registrotecnicos.data.local.entities.MensajeEntity
 import edu.ucne.registrotecnicos.data.local.entities.PrioridadEntity
 import edu.ucne.registrotecnicos.data.local.entities.TecnicoEntity
 import edu.ucne.registrotecnicos.data.local.entities.TicketEntity
+import edu.ucne.registrotecnicos.data.local.entities.UsuarioEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,9 +24,10 @@ import kotlinx.coroutines.launch
             TecnicoEntity::class,
             TicketEntity::class,
             PrioridadEntity::class,
-            MensajeEntity::class
+            MensajeEntity::class,
+            UsuarioEntity::class
         ],
-        version = 15,
+        version = 17,
         exportSchema = false
     )
     abstract class TecnicoDb : RoomDatabase() {
@@ -32,6 +35,7 @@ import kotlinx.coroutines.launch
         abstract fun ticketDao(): TicketDao
     abstract fun prioridadDao(): PrioridadDao
     abstract fun mensajeDao(): MensajeDao
+    abstract fun usuarioDao(): UsuarioDao
 
     companion object {
         @Volatile

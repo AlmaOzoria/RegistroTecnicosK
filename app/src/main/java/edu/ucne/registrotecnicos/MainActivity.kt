@@ -15,6 +15,7 @@ import edu.ucne.registrotecnicos.data.repository.TecnicosNavHost
 import edu.ucne.registrotecnicos.presentacion.enfermedad.EnfermedadViewModel
 import edu.ucne.registrotecnicos.presentacion.tecnicos.TecnicoViewModel
 import edu.ucne.registrotecnicos.presentacion.ticket.TicketViewModel
+import edu.ucne.registrotecnicos.presentacion.usuario.UsuarioViewModel
 import edu.ucne.registrotecnicos.ui.theme.RegistroTecnicosTheme
 
 @AndroidEntryPoint
@@ -28,12 +29,14 @@ class MainActivity : ComponentActivity() {
                 val tecnicoViewModel: TecnicoViewModel = hiltViewModel()
                 val ticketViewModel: TicketViewModel = hiltViewModel()
                 val enfermedadViewModel: EnfermedadViewModel = hiltViewModel()
+                val usuarioViewModel: UsuarioViewModel = hiltViewModel()
 
                 TecnicosNavHost(
                     navHostController = navController,
                     tecnicoViewModel = tecnicoViewModel,
                     ticketViewModel = ticketViewModel,
-                    enfermedadViewModel = enfermedadViewModel
+                    enfermedadViewModel = enfermedadViewModel,
+                      usuarioViewModel = usuarioViewModel
                 )
             }
         }

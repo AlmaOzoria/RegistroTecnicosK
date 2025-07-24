@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import edu.ucne.registrotecnicos.data.local.entities.PrioridadEntity
+import edu.ucne.registrotecnicos.data.local.entities.UsuarioEntity
 import edu.ucne.registrotecnicos.presentacion.enfermedad.EnfermedadViewModel
 import edu.ucne.registrotecnicos.presentacion.enfermedad.EnfermedadListScreen
 import edu.ucne.registrotecnicos.presentacion.enfermedad.EnfermedadScreen
@@ -24,6 +25,16 @@ import edu.ucne.registrotecnicos.presentacion.tecnicos.TecnicoViewModel
 import edu.ucne.registrotecnicos.presentacion.ticket.TicketListScreen
 import edu.ucne.registrotecnicos.presentacion.ticket.TicketScreen
 import edu.ucne.registrotecnicos.presentacion.ticket.TicketViewModel
+import edu.ucne.registrotecnicos.presentacion.usuario.UsuarioListScreen
+import edu.ucne.registrotecnicos.presentacion.usuario.UsuarioScreen
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
+import edu.ucne.registrotecnicos.presentacion.usuario.UsuarioViewModel
+import kotlinx.coroutines.launch
+
+
 
 @Composable
 fun TecnicosNavHost(
@@ -31,7 +42,8 @@ fun TecnicosNavHost(
     tecnicoViewModel: TecnicoViewModel,
     ticketViewModel: TicketViewModel,
     enfermedadViewModel : EnfermedadViewModel = hiltViewModel(),
-    mensajeViewModel: MensajeViewModel = hiltViewModel()
+    mensajeViewModel: MensajeViewModel = hiltViewModel(),
+    usuarioViewModel: UsuarioViewModel = hiltViewModel()
 ) {
     NavHost(
         navController = navHostController,
@@ -47,6 +59,9 @@ fun TecnicosNavHost(
                 },
                 goToEnfermedad = {
                     navHostController.navigate("EnfermedadList")
+                },
+                goToUsuario = {
+                    navHostController.navigate("UsuarioList")
                 }
             )
         }
@@ -221,6 +236,56 @@ fun TecnicosNavHost(
                     )
                     enfermedadViewModel.saveEnfermedad(nuevaEnfermedad)
                     navHostController.popBackStack()
+                },
+                onCancel = {
+                    navHostController.popBackStack()
+                }
+            )
+        }
+
+
+        composable("UsuarioList") {
+            val usuarioViewModel: UsuarioViewModel = hiltViewModel()
+            val uiState by usuarioViewModel.uiState.collectAsStateWithLifecycle()
+
+            UsuarioListScreen(
+                viewModel = usuarioViewModel,
+//                usuario = uiState.usuarios,
+                goToUsuario = { id ->
+                    navHostController.navigate("Usuario/$id")
+                },
+                onCreate = {
+                    navHostController.navigate("Usuario/0")
+                },
+                onDelete = { usuario ->
+                    usuarioViewModel.deleteUsuario(usuario)
+                },
+                onRefresh = {
+                    usuarioViewModel.getUsuarios()
+                }
+            )
+        }
+
+
+        composable("Usuario/{usuarioId}") { backStackEntry ->
+            val usuarioViewModel: UsuarioViewModel = hiltViewModel()
+            val usuarioIdParam = backStackEntry.arguments?.getString("usuarioId")
+            val usuarioId = usuarioIdParam?.toIntOrNull() ?: 0
+            val usuario = usuarioViewModel.getUsuarioById(usuarioId)
+
+            UsuarioScreen(
+                usuario = usuario,
+                onSave = { nombre, apellido, email ->
+                    val usuarioEntity = UsuarioEntity(
+                        id = usuario?.id ?: 0,
+                        nombre = nombre,
+                        apellido = apellido,
+                        email = email
+                    )
+                    usuarioViewModel.viewModelScope.launch {
+                        usuarioViewModel.saveUsuario(usuarioEntity)
+                        navHostController.popBackStack()
+                    }
                 },
                 onCancel = {
                     navHostController.popBackStack()

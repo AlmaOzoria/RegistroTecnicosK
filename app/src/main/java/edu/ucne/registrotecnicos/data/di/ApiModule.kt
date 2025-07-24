@@ -7,15 +7,17 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.ucne.registrotecnicos.presentacion.remote.EnfermedadApi
+import edu.ucne.registrotecnicos.presentacion.remote.UsuarioApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
-
 
 @InstallIn(SingletonComponent::class)
 @Module
 object ApiModule {
-    const val BASE_URL = "https://apienfermedad.azurewebsites.net/"
+    private const val ENFERMEDAD_BASE_URL = "https://apienfermedad.azurewebsites.net/"
+    private const val USUARIOS_BASE_URL = "https://usuarioapp.azurewebsites.net/"
 
     @Provides
     @Singleton
@@ -26,12 +28,33 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun providesEnfermedadApi(moshi: Moshi): EnfermedadApi {
+    @Named("EnfermedadRetrofit")
+    fun providesEnfermedadRetrofit(moshi: Moshi): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(ENFERMEDAD_BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
-            .create(EnfermedadApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun providesEnfermedadApi(
+        @Named("EnfermedadRetrofit") retrofit: Retrofit
+    ): EnfermedadApi = retrofit.create(EnfermedadApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named("UsuarioRetrofit")
+    fun providesUsuarioRetrofit(moshi: Moshi): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(USUARIOS_BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun providesUsuarioApi(
+        @Named("UsuarioRetrofit") retrofit: Retrofit
+    ): UsuarioApi = retrofit.create(UsuarioApi::class.java)
 }

@@ -17,5 +17,9 @@ sealed class Screen {
     data object EnfermedadList : Screen()
     @Serializable
     data class Enfermedad(val enfermedadId: Int) : Screen()
+    @Serializable
+    data object UsuarioList : Screen()
+    @Serializable
+    data class Usuario(val usuarioId: Int) : Screen()
 
 }

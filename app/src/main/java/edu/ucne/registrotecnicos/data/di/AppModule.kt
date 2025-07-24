@@ -38,4 +38,7 @@ object AppModule {
 
     @Provides
     fun providePrioridadDao(db: TecnicoDb) = db.prioridadDao()
+
+    @Provides
+    fun provideUsuarioDao(db: TecnicoDb)= db.usuarioDao()
 }
