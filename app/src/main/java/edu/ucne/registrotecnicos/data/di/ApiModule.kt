@@ -8,8 +8,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.ucne.registrotecnicos.presentacion.remote.EnfermedadApi
 import edu.ucne.registrotecnicos.presentacion.remote.UsuarioApi
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -57,4 +59,15 @@ object ApiModule {
     fun providesUsuarioApi(
         @Named("UsuarioRetrofit") retrofit: Retrofit
     ): UsuarioApi = retrofit.create(UsuarioApi::class.java)
+
+    val okHttpClient = OkHttpClient.Builder()
+        .callTimeout(30, TimeUnit.SECONDS)
+        .build()
+
+    val retrofit = Retrofit.Builder()
+        .baseUrl(USUARIOS_BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+
 }
